@@ -1,0 +1,31 @@
+{
+  "name": "sneaker",
+  "version": "0.0.1",
+  "description": "a fresh take on the shoe style stream",
+  "main": "index.js",
+  "browserify": "browser.js",
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "ecstatic": "~0.5.1",
+    "ws": "~0.4.31"
+  },
+  "devDependencies": {
+    "through2": "^0.4.1",
+    "fakestream": "^0.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bhurlow/sneaker.git"
+  },
+  "author": "Brian Hurlow",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bhurlow/sneaker/issues"
+  },
+  "homepage": "https://github.com/bhurlow/sneaker"
+}
