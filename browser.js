@@ -1,5 +1,4 @@
 
-
 var resolve = require('url').resolve
 var parse = require('url').parse
 var format = require('url').format
@@ -31,43 +30,20 @@ function WebsocketStream(url) {
   this.ws = new WebSocket(uri)
 
   this.ws.onmessage = function(chunk) {
-
     self.push(chunk.data)
-
-    //if (!self._buffer.length) {
-      //self.push(chunk.data)
-      //self._buffer.push(chunk.data)
-    //}
-    //self._buffer.push(chunk.data)
-
+    // TODO: buffer here
   }
 
-
-  
 }
 
-//WebsocketStream.prototype._write = function(chunk, enc, cb) {
-  //console.log('wwrite')
-//}
+WebsocketStream.prototype._write = function(chunk, enc, cb) {
+  console.error('duplex not implemented')
+}
 
-var counter = 5
 
 WebsocketStream.prototype._read = function(size) {
-
-  console.log('read call')
-
-  var chunk = this._buffer.pop()
-
-  if (chunk) {
-    this.push(chunk)
-  }
-
+  // TODO: read from buffer here
 }
-
-/*WebsocketStream.prototype._pause = function() {*/
-  //console.log('pause implementation')
-/*}*/
-
 
 module.exports = function(path) {
   if (!path) throw new Error('must supply path')

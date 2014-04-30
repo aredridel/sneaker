@@ -11,9 +11,11 @@ wut? why?
 
 [websocket stream](https://github.com/maxogden/websocket-stream) is also great, but it returns a classic style stream (via the `through` module) which doesn't have goodies like the `read()` method, which I like. Thus, here we are. Another websocket streaming wrapper. njoy!
 
-*also* sneaker bundles with [reconnect](https://github.com/juliangruber/reconnect-core) for robust connections
-
-
+more why: I had a specific use case where I wanted to point a really big stream
+to my client. I wanted that client to be able to bit off peices in
+a pagination sort of way. In this case streams2 api was compelling for flow
+control. I found most of the existing websocket wrappers to be lacking in
+this dimension
 
 ### server
 

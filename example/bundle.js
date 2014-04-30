@@ -1,6 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 
-
 var resolve = require('url').resolve
 var parse = require('url').parse
 var format = require('url').format
@@ -32,43 +31,20 @@ function WebsocketStream(url) {
   this.ws = new WebSocket(uri)
 
   this.ws.onmessage = function(chunk) {
-
     self.push(chunk.data)
-
-    //if (!self._buffer.length) {
-      //self.push(chunk.data)
-      //self._buffer.push(chunk.data)
-    //}
-    //self._buffer.push(chunk.data)
-
+    // TODO: buffer here
   }
 
-
-  
 }
 
-//WebsocketStream.prototype._write = function(chunk, enc, cb) {
-  //console.log('wwrite')
-//}
+WebsocketStream.prototype._write = function(chunk, enc, cb) {
+  console.error('duplex not implemented')
+}
 
-var counter = 5
 
 WebsocketStream.prototype._read = function(size) {
-
-  console.log('read call')
-
-  var chunk = this._buffer.pop()
-
-  if (chunk) {
-    this.push(chunk)
-  }
-
+  // TODO: read from buffer here
 }
-
-/*WebsocketStream.prototype._pause = function() {*/
-  //console.log('pause implementation')
-/*}*/
-
 
 module.exports = function(path) {
   if (!path) throw new Error('must supply path')
@@ -87,14 +63,17 @@ var through = require('through2')
 
 // classic way
 
-stream.on('data', function(chunk) {
-  addChild(chunk.toString())
-})
+//stream.on('data', function(chunk) {
+  //addChild(chunk.toString())
+//})
 
 //setTimeout(function() {
   //console.log('calling client pause')
   //stream.pause()
 //}, 500)
+
+
+
 
 // the .read() way
 
@@ -104,22 +83,17 @@ stream.on('data', function(chunk) {
   //addChild(chunk.toString())
 //})
 
+
+
+
 // the 'flowing' way (disables the read() method)
 
-/*stream.pipe(through(function(chunk, enc, cb) {*/
-  //console.log('chunk!')
-  //console.log(chunk.toString())
-  //document.body.innerHTML = chunk.toString()
-  //setTimeout(cb, 1000)
-/*}))*/
+stream.pipe(through(function(chunk, enc, cb) {
+  document.body.innerHTML = chunk.toString()
+  setTimeout(cb, 1000)
+}))
 
-//var ts = through(function(chunk, enc, cb) {
 
-//})
-
-//ts.pause()
-
-//console.log(ts)
 
 function addChild(text) {
   var div = document.createElement('div')
