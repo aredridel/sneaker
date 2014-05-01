@@ -1,7 +1,7 @@
 sneaker
 =======
 
-shoe's older, hipper estranged cousin
+[shoe](https://github.com/substack/shoe)'s older, hipper, skinnier estranged cousin
 
 ### server
 
