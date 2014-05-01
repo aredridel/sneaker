@@ -11,7 +11,7 @@ inherits(WebsocketStream, Duplex)
 function WebsocketStream(url) {
 
   var self = this
-  Duplex.call(this)
+  Duplex.call(this, { highWaterMark: 100 })
   if (!WebSocket) throw new Error('I cant find a websocket here')
 
   // make it a ws:// 
@@ -21,8 +21,27 @@ function WebsocketStream(url) {
 
   this.ws = new WebSocket(uri)
 
+  this.ws.onopen = function() {
+    self.halt()
+  }
+
   this.ws.onmessage = function(chunk) {
-    self.push(chunk.data)
+
+    // push returns false if internal hwm has been hit
+    // http://nodejs.org/api/stream.html#stream_readable_push_chunk_encoding
+    
+    console.log('push')
+    var ok = self.push(chunk.data)
+    console.log(self._readableState.buffer.length)
+
+    if (!ok) {
+      self.halt()
+    }
+
+  }
+
+  this.ws.onopen = function() {
+    self.emit('readable')
   }
 
   this.ws.onerror = function(err) {
@@ -30,10 +49,19 @@ function WebsocketStream(url) {
   }
 
   this.ws.onclose = function() {
+    self.push(null)
     self.emit('end')
     self.emit('close')
   }
 
+}
+
+// aka 'pause upstream'
+
+WebsocketStream.prototype.halt = function() {
+  this.ws.send('hwm')
+  console.error('hit high water')
+  //throw new Error('hit that ol hwm')
 }
 
 WebsocketStream.prototype._write = function(chunk, enc, cb) {
@@ -41,6 +69,7 @@ WebsocketStream.prototype._write = function(chunk, enc, cb) {
 }
 
 WebsocketStream.prototype._read = function(size) {
+  console.log('read call')
   // this can be a noop b/c
   // the ws message events are filling
   // the internal buffer
@@ -59,13 +88,25 @@ var sneaker = require('../')
 var stream = sneaker('/yolo')
 var through = require('through2')
 
-stream.pipe(through(function(chunk, enc, cb) {
-  addChild(chunk.toString())
-  cb()
-}))
+//stream.pipe(through(function(chunk, enc, cb) {
+  //addChild(chunk.toString())
+  //cb()
+//}))
+
+
+setInterval(function() {
+  var chunk = stream.read(100)
+  chunk = chunk || 'empty'
+  console.log(chunk.toString())
+  console.log(stream._readableState.buffer.length)
+}, 500)
 
 stream.on('end', function() {
   console.log('this stream is over yo')
+})
+
+stream.on('drain', function() {
+  console.log('drain has been called@@@@###')
 })
 
 function addChild(text) {

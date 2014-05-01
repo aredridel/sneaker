@@ -14,7 +14,7 @@ sneaker(server, function(stream) {
 
   setTimeout(function() {
     stream.end()
-  }, 1000)
+  }, 500)
 
 })
 
