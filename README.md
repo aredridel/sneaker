@@ -1,24 +1,16 @@
 sneaker
 =======
 
-a streams2 analog of shoe 
-
+shoe's older, hipper estranged cousin
 
 ### server
 
-```javscript
-var http = require('http')
-var ecstatic = require('ecstatic')(__dirname)
-var server = http.createServer(ecstatic)
-server.listen(3000)
+```javascript
+var sneaker = require('../')
 
-var sneaker = require('sneaker')
-
-var websocket = sneaker(function(stream) {
-
+sneaker(anHttpServer, function(stream) {
+  fakestream.pipe(stream)
 })
-
-websocket.install(server, '/yolo')
 ```
 
 ### browser
@@ -32,15 +24,6 @@ websocket.on('readable', function() {
 	doSomethingAmazing(chunk)
 })
 ```
-
-### rpc style
-
-todo
-
-### withreconnect
-
-todo
-
 
 ### install
 
