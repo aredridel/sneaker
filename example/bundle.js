@@ -4,8 +4,6 @@ var resolve = require('url').resolve
 var parse = require('url').parse
 var format = require('url').format
 
-// should be own file
-
 var Duplex = require('stream').Duplex
 var inherits = require('util').inherits
 inherits(WebsocketStream, Duplex)
@@ -24,9 +22,6 @@ function WebsocketStream(url) {
   this.ws = new WebSocket(uri)
 
   this.ws.onmessage = function(chunk) {
-    // this makes the stream usable
-    // but fires a bunch of readable events
-    // we need a way to fill the internal buffer appropriately
     self.push(chunk.data)
   }
 
@@ -36,24 +31,19 @@ function WebsocketStream(url) {
 
   this.ws.onclose = function() {
     self.emit('end')
+    self.emit('close')
   }
 
 }
 
 WebsocketStream.prototype._write = function(chunk, enc, cb) {
-  console.error('duplex not implemented')
+  //console.log(chunk.toString())
 }
 
-// this case is unique b/c the underlying source
-// aka the websocket stream can't be read immediately
-// thus, we can start pulling from the buffer until
-// we have something
-
 WebsocketStream.prototype._read = function(size) {
-  console.log('read!')
-  //this.push(null)
-  //var chunk = this._buffer.pop()
-  // TODO: read from buffer here
+  // this can be a noop b/c
+  // the ws message events are filling
+  // the internal buffer
 }
 
 module.exports = function(path) {
@@ -65,28 +55,18 @@ module.exports = function(path) {
 },{"stream":30,"url":37,"util":39}],2:[function(require,module,exports){
 
 
-
 var sneaker = require('../')
 var stream = sneaker('/yolo')
 var through = require('through2')
 
-// the .read() way
-
-stream.on('readable', function() {
-  var self = this
-  console.log('readable is fired')
-  // read n chars
-  setTimeout(function() {
-    var chunk = self.read(8)
-    addChild(chunk.toString())
-  }, 400)
-
-})
+stream.pipe(through(function(chunk, enc, cb) {
+  addChild(chunk.toString())
+  cb()
+}))
 
 stream.on('end', function() {
   console.log('this stream is over yo')
 })
-
 
 function addChild(text) {
   var div = document.createElement('div')

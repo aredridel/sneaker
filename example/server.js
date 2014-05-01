@@ -1,6 +1,6 @@
 
 
-var fakestream = require('fakestream')(500)
+var fakestream = require('fakestream')(10)
 var http = require('http')
 var ecstatic = require('ecstatic')(__dirname)
 var server = http.createServer(ecstatic)
@@ -10,16 +10,11 @@ var sneaker = require('../')
 
 sneaker(server, function(stream) {
 
-  var count = 0
-
-  setInterval(function() {
-    stream.write(count++ + ' from ws server')
-  }, 50)
+  fakestream.pipe(stream)
 
   setTimeout(function() {
     stream.end()
-  }, 3000)
-
+  }, 1000)
 
 })
 

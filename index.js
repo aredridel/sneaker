@@ -26,6 +26,7 @@ WebsocketStream.prototype._read = function(size) {
 
 WebsocketStream.prototype.end = function(data) {
   this.ws.close()
+  this.emit('close')
 }
 
 function sneaker(server, cb) {
