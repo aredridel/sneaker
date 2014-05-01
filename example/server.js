@@ -14,7 +14,12 @@ sneaker(server, function(stream) {
 
   setInterval(function() {
     stream.write(count++ + ' from ws server')
-  }, 100)
+  }, 50)
+
+  setTimeout(function() {
+    stream.end()
+  }, 3000)
+
 
 })
 

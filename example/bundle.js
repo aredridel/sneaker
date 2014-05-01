@@ -16,13 +16,6 @@ function WebsocketStream(url) {
   Duplex.call(this)
   if (!WebSocket) throw new Error('I cant find a websocket here')
 
-  // naive internal buffer
-  // can we put this elsewhere? indexedDB?
-  // should we pass in a max buffer size?
-
-  this._buffer = []
-  this._max = 10
-
   // make it a ws:// 
   var parts = parse(url)
   parts.protocol = 'ws:'
@@ -31,8 +24,18 @@ function WebsocketStream(url) {
   this.ws = new WebSocket(uri)
 
   this.ws.onmessage = function(chunk) {
+    // this makes the stream usable
+    // but fires a bunch of readable events
+    // we need a way to fill the internal buffer appropriately
     self.push(chunk.data)
-    // TODO: buffer here
+  }
+
+  this.ws.onerror = function(err) {
+    self.emit('error', err)
+  }
+
+  this.ws.onclose = function() {
+    self.emit('end')
   }
 
 }
@@ -41,8 +44,15 @@ WebsocketStream.prototype._write = function(chunk, enc, cb) {
   console.error('duplex not implemented')
 }
 
+// this case is unique b/c the underlying source
+// aka the websocket stream can't be read immediately
+// thus, we can start pulling from the buffer until
+// we have something
 
 WebsocketStream.prototype._read = function(size) {
+  console.log('read!')
+  //this.push(null)
+  //var chunk = this._buffer.pop()
   // TODO: read from buffer here
 }
 
@@ -60,39 +70,22 @@ var sneaker = require('../')
 var stream = sneaker('/yolo')
 var through = require('through2')
 
-
-// classic way
-
-//stream.on('data', function(chunk) {
-  //addChild(chunk.toString())
-//})
-
-//setTimeout(function() {
-  //console.log('calling client pause')
-  //stream.pause()
-//}, 500)
-
-
-
-
 // the .read() way
 
-//stream.on('readable', function() {
-  //// read n chars
-  //var chunk = this.read(8)
-  //addChild(chunk.toString())
-//})
+stream.on('readable', function() {
+  var self = this
+  console.log('readable is fired')
+  // read n chars
+  setTimeout(function() {
+    var chunk = self.read(8)
+    addChild(chunk.toString())
+  }, 400)
 
+})
 
-
-
-// the 'flowing' way (disables the read() method)
-
-stream.pipe(through(function(chunk, enc, cb) {
-  document.body.innerHTML = chunk.toString()
-  setTimeout(cb, 1000)
-}))
-
+stream.on('end', function() {
+  console.log('this stream is over yo')
+})
 
 
 function addChild(text) {

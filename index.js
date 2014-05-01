@@ -24,6 +24,10 @@ WebsocketStream.prototype._read = function(size) {
   console.error('TODO: implement the other direction')
 }
 
+WebsocketStream.prototype.end = function(data) {
+  this.ws.close()
+}
+
 function sneaker(server, cb) {
   var WebSocket = require('ws')
   var WebSocketServer = WebSocket.Server
