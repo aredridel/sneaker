@@ -8,6 +8,11 @@ module.exports = sneaker
 function WebsocketStream(ws) {
   Duplex.call(this)
   this.ws = ws
+
+  var socket = this;
+  this.ws.on('message', function (data) {
+      socket.push(data);
+  });
 }
 
 WebsocketStream.prototype._write = function(chunk, enc, cb) {
@@ -17,11 +22,13 @@ WebsocketStream.prototype._write = function(chunk, enc, cb) {
   }
   else {
     console.error('TODO add server-side buffering')
+    this.ws.send(chunk.toString())
+    cb()
   }
 }
 
 WebsocketStream.prototype._read = function(size) {
-  console.error('TODO: implement the other direction')
+
 }
 
 WebsocketStream.prototype.end = function(data) {

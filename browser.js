@@ -36,7 +36,8 @@ function WebsocketStream(url) {
 }
 
 WebsocketStream.prototype._write = function(chunk, enc, cb) {
-  //console.log(chunk.toString())
+    this.ws.send(chunk);
+    cb();
 }
 
 WebsocketStream.prototype._read = function(size) {
