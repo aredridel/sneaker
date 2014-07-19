@@ -8,23 +8,30 @@ module.exports = sneaker
 function WebsocketStream(ws) {
   Duplex.call(this)
   this.ws = ws
+  this.queue = [];
 
   var socket = this;
   this.ws.on('message', function (data) {
       socket.push(data);
   });
+  this.ws.on('open', function () {
+    this.queue.forEach(function(e) {
+      this.write(e);
+    });
+    this.queue = [];
+  });
 }
 
 WebsocketStream.prototype._write = function(chunk, enc, cb) {
   try {
-    if (this.ws.readyState === 1) {
+    if (this.ws.readyState == 0) {
+      this.queue.push(chunk);
+    } else if (this.ws.readyState == 1) {
       this.ws.send(chunk.toString())
       cb()
     }
     else {
-      console.error('TODO add server-side buffering')
-      this.ws.send(chunk.toString())
-      cb()
+      this.emit('error', 'Invalid state');
     }
   } catch (e) {
     this.emit('error', e);
