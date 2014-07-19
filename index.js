@@ -16,14 +16,18 @@ function WebsocketStream(ws) {
 }
 
 WebsocketStream.prototype._write = function(chunk, enc, cb) {
-  if (this.ws.readyState === 1) {
-    this.ws.send(chunk.toString())
-    cb()
-  }
-  else {
-    console.error('TODO add server-side buffering')
-    this.ws.send(chunk.toString())
-    cb()
+  try {
+    if (this.ws.readyState === 1) {
+      this.ws.send(chunk.toString())
+      cb()
+    }
+    else {
+      console.error('TODO add server-side buffering')
+      this.ws.send(chunk.toString())
+      cb()
+    }
+  } catch (e) {
+    this.emit('error', e);
   }
 }
 
