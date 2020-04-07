@@ -8,12 +8,12 @@
     "example": "example"
   },
   "dependencies": {
-    "ecstatic": "^3.1.1",
-    "ws": "~3.3.1"
+    "ecstatic": "^4.1.4",
+    "ws": "^3.3.3"
   },
   "devDependencies": {
     "fakestream": "^0.1.0",
-    "through2": "^2.0.3"
+    "through2": "^2.0.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
