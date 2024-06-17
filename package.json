@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "ecstatic": "^4.1.4",
-    "ws": "^3.3.3"
+    "ws": "^5.2.4"
   },
   "devDependencies": {
     "fakestream": "^0.1.0",
